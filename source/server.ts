@@ -3,6 +3,7 @@ import express, { Express } from 'express'
 import morgan from 'morgan'
 import routes from './routes/todos'
 import { connect, connection } from 'mongoose'
+import todos from './controllers/todos'
 
 const router: Express = express()
 
@@ -40,8 +41,13 @@ router.use((req, res, next) => {
     })
 })
 
+const username = 'kingzoo_254'
+const password = 'hfXziCCb2pL2'
+const cluster = 'cluster0.t6p81'
+const dbname = 'todos'
+
 // Connect to a local instance of mongodb
-connect('mongodb://localhost:27017/posts')
+connect(`mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority`)
 
 const db = connection
 db.on('error', console.error.bind(console, "Connection error: "))
