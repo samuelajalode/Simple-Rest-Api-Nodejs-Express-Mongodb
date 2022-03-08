@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import axios, { AxiosResponse } from 'axios'
+import { Todo } from './../models/todos.model';
+import models from '../models/todos.model'
 
 interface Post {
     userId: number,
@@ -57,18 +59,18 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const createPost = async (req: Request, res: Response, next: NextFunction) => {
-    // Get the data from the request body.
-    let title: string = req.body.title ?? null
-    let body: string = req.body.body ?? null
-    let result: AxiosResponse = await axios.post(`${url}posts`, {
-        title,
-        body
-    })
+    const todo = new models.Todos(req.body)
 
-    let post: Post = result.data
-    return res.status(201).json({
-        response: post
-    })
+    try {
+        await todo.save()
+        return res.status(201).json({
+            response: todo
+        })
+    } catch (error) {
+        return res.status(500).json({
+            response: `An error occurred: ${error}`
+        })
+    }
 }
 
 export default { createPost, updatePost, deletePost, getPost, getPosts }

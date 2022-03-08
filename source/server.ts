@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import routes from './routes/posts'
 
 const router: Express = express()
+const mongoose = require('mongoose')
 
 // For Logging
 router.use(morgan('dev'))
@@ -38,6 +39,18 @@ router.use((req, res, next) => {
         message: error.message
     })
 })
+
+// Connect to a local instance of mongodb
+mongoose.connect('mongodb://localhost:27017/posts', {
+    useNewUrlParser: true,
+    // Console Error: The method below is not supported.
+    // useFindAndModify: false,
+    useUnifiedTopology: true
+})
+
+const db = mongoose.connection
+db.on('error', console.error.bind(console, "Connection error: "))
+db.once('open', () => console.log('Connected successfully'))
 
 // Initiating the Server
 const httpServer = http.createServer(router)
