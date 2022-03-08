@@ -1,17 +1,11 @@
-const mongoose = require('mongoose')
+import { Schema, model } from 'mongoose'
 
 export interface Todo {
-    todoId: number,
     content: string,
     done: boolean
 }
 
-const TodosSchema: Todo = new mongoose.Schema({
-    todoId: {
-        type: Number,
-        required: true,
-        default: 1
-    },
+const TodosSchema = new Schema<Todo>({
     content: {
         type: String,
         required: true,
@@ -22,6 +16,6 @@ const TodosSchema: Todo = new mongoose.Schema({
     }
 })
 
-const Todos = mongoose.model('Todos', TodosSchema)
+const Todos = model<Todo>('Todos', TodosSchema)
 
 export default { Todos }

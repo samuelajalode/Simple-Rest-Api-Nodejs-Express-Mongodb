@@ -59,7 +59,7 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const createPost = async (req: Request, res: Response, next: NextFunction) => {
-    const todo = new models.Todos(req.body)
+    const todo = new models.Todos<Todo>(req.body)
 
     try {
         await todo.save()
