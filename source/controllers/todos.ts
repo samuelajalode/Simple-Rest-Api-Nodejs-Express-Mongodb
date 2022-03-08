@@ -17,14 +17,14 @@ interface TodosResponse extends Todo {
 const url = 'https://jsonplaceholder.typicode.com/'
 
 // getting all posts
-const getPosts = async (req: Request, res: Response, next: NextFunction) => {
+const getTodos = async (req: Request, res: Response, next: NextFunction) => {
     const result: TodosResponse[] = await models.Todos.find({})
     return res.status(200).json({
         response: result
     })
 }
 
-const getPost = async (req: Request, res: Response, next: NextFunction) => {
+const getTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the id from the request body.
     let id: string = req.params.id
     let result: AxiosResponse = await axios.get(`${url}posts/${id}`)
@@ -34,7 +34,7 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-const updatePost = async (req: Request, res: Response, next: NextFunction) => {
+const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the data from the request body.
     let id: string = req.params.id
     let title: string = req.body.title ?? null
@@ -50,7 +50,7 @@ const updatePost = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the id from the request body.
     let id: string = req.params.id
     let result: AxiosResponse = await axios.delete(`${url}posts/${id}`)
@@ -60,7 +60,7 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-const createPost = async (req: Request, res: Response, next: NextFunction) => {
+const createTodo = async (req: Request, res: Response, next: NextFunction) => {
     const todo = new models.Todos<Todo>(req.body)
 
     try {
@@ -76,4 +76,4 @@ const createPost = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-export default { createPost, updatePost, deletePost, getPost, getPosts }
+export default { createTodo, updateTodo, deleteTodo, getTodo, getTodos }
