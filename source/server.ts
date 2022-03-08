@@ -1,7 +1,7 @@
 import http from 'http'
 import express, { Express } from 'express'
 import morgan from 'morgan'
-import routes from './routes/posts'
+import routes from './routes/todos'
 import { connect, connection } from 'mongoose'
 
 const router: Express = express()

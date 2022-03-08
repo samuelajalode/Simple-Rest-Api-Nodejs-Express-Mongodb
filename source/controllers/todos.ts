@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import axios, { AxiosResponse } from 'axios'
-import { Todo } from './../models/todos.model';
+import { Todo } from '../models/todos.model';
 import models from '../models/todos.model'
 
 interface Post {
@@ -10,14 +10,17 @@ interface Post {
     body: string
 }
 
+interface TodosResponse extends Todo {
+    id?: string,
+}
+
 const url = 'https://jsonplaceholder.typicode.com/'
 
 // getting all posts
 const getPosts = async (req: Request, res: Response, next: NextFunction) => {
-    let result: AxiosResponse = await axios.get(`${url}posts`)
-    let posts: Post[] = result.data
+    const result: TodosResponse[] = await models.Todos.find({})
     return res.status(200).json({
-        response: posts
+        response: result
     })
 }
 
@@ -52,7 +55,6 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
     let id: string = req.params.id
     let result: AxiosResponse = await axios.delete(`${url}posts/${id}`)
 
-    let post: Post = result.data
     return res.status(200).json({
         message: 'Post deleted successfully'
     })
@@ -63,8 +65,9 @@ const createPost = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         await todo.save()
+        const result: TodosResponse = todo
         return res.status(201).json({
-            response: todo
+            response: result
         })
     } catch (error) {
         return res.status(500).json({
