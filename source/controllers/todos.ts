@@ -64,13 +64,27 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
-    // Get the id from the request body.
-    let id: string = req.params.id
-    let result: AxiosResponse = await axios.delete(`${url}posts/${id}`)
+    // Get the data from the request body.
+    const id: string = req.params.id
+    const todo = await getTodoById(id)
 
-    return res.status(200).json({
-        message: 'Post deleted successfully'
-    })
+    if (!todo) {
+        return res.status(404).json({
+            response: 'Todo Not Found'
+        })
+    }
+
+    try {
+        // Update the todo then save it to the database.
+        await todo.remove()
+        return res.status(204).json({
+            response: 'Deleted successfully'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            response: `An error occurred: ${error}`
+        })
+    }
 }
 
 const createTodo = async (req: Request, res: Response, next: NextFunction) => {
