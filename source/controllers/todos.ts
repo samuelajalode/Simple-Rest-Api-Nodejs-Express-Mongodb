@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import axios, { AxiosResponse } from 'axios'
 import { Todo } from '../models/todos.model';
 import models from '../models/todos.model'
 
@@ -14,7 +13,8 @@ interface TodosResponse extends Todo {
     id?: string,
 }
 
-const url = 'https://jsonplaceholder.typicode.com/'
+const getTodoById = async (id: string) => models.Todos.findById(id)
+
 
 // getting all posts
 const getTodos = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,15 +26,27 @@ const getTodos = async (req: Request, res: Response, next: NextFunction) => {
 
 const getTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the id from the request body.
-    let id: string = req.params.id
-    let result: AxiosResponse = await axios.get(`${url}posts/${id}`)
-    let post: Post = result.data
-    return res.status(200).json({
-        response: post
-    })
+    const id: string = req.params.id
+    const todo = await getTodoById(id)
+
+    if (!todo) {
+        return res.status(404).json({
+            response: 'Todo Not Found'
+        })
+    }
+
+    try {
+        const result: TodosResponse = todo
+        return res.status(200).json({
+            response: result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            response: `An error occurred: ${error}`
+        })
+    }
 }
 
-const getTodoById = async (id: string) => models.Todos.findById(id)
 
 const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the data from the request body.
@@ -60,7 +72,6 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
             response: `An error occurred: ${error}`
         })
     }
-
 }
 
 const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
@@ -75,7 +86,7 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     try {
-        // Update the todo then save it to the database.
+        // Remove the todo from the database.
         await todo.remove()
         return res.status(204).json({
             response: 'Deleted successfully'
