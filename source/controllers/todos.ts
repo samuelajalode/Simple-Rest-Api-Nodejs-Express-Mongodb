@@ -34,20 +34,33 @@ const getTodo = async (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
+const getTodoById = async (id: string) => models.Todos.findById(id)
+
 const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
     // Get the data from the request body.
-    let id: string = req.params.id
-    let title: string = req.body.title ?? null
-    let body: string = req.body.body ?? null
-    let result: AxiosResponse = await axios.patch(`${url}posts/${id}`, {
-        ...(title && { title }),
-        ...(body && { body })
-    })
+    const id: string = req.params.id
+    const todo = await getTodoById(id)
 
-    let post: Post = result.data
-    return res.status(200).json({
-        response: post
-    })
+    if (!todo) {
+        return res.status(404).json({
+            response: 'Todo Not Found'
+        })
+    }
+
+    try {
+        // Update the todo then save it to the database.
+        Object.assign(todo, req.body)
+        await todo.save()
+        const result: TodosResponse = todo
+        return res.status(200).json({
+            response: result
+        })
+    } catch (error) {
+        return res.status(500).json({
+            response: `An error occurred: ${error}`
+        })
+    }
+
 }
 
 const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
