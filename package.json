@@ -4,9 +4,10 @@
   "main": "source/server.ts",
   "scripts": {
     "dev": "nodemon source/server.ts",
-    "build": "rm -rf build/ && prettier --write source/ && tsc"
+    "build": "rm -rf build/ && prettier --write source/ && tsc",
+    "compile": "tsc --build tsconfig.json"
   },
-  "author": "Ryan Njoroge",
+  "author": "samuel ajalode",
   "license": "MIT",
   "dependencies": {
     "@types/axios": "^0.14.0",
